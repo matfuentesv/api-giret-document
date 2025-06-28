@@ -1,0 +1,7 @@
+com\giret\document\model\Document$DocumentBuilder.class
+com\giret\document\service\DocumentServiceImpl.class
+com\giret\document\ApiGiretDocument.class
+com\giret\document\controller\DocumentController.class
+com\giret\document\service\DocumentService.class
+com\giret\document\repository\DocumentRepository.class
+com\giret\document\model\Document.class
