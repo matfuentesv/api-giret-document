@@ -37,14 +37,14 @@ public class DocumentController {
         return ResponseEntity.ok(doc);
     }
 
-    @GetMapping("/findAllDocumento")
-    public ResponseEntity<List<Document>> findAllDocumento() {
-        return ResponseEntity.ok(documentService.findAllDocument());
-    }
-
     @GetMapping("/by-resource/{id}")
     public ResponseEntity<List<Document>> findByRecursoId(@PathVariable Long id) {
         return ResponseEntity.ok(documentService.findByResourceId(id));
+    }
+
+    @GetMapping("/findAllDocumento")
+    public ResponseEntity<List<Document>> findAllDocumento() {
+        return ResponseEntity.ok(documentService.findAllDocument());
     }
 
     @DeleteMapping("/{id}")

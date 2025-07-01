@@ -13,9 +13,9 @@ public class AwsS3Config {
     @Bean
     public S3Client s3Client() {
         AwsSessionCredentials sessionCredentials = AwsSessionCredentials.create(
-                "ASIAUIIHPI6SRHO5VJ3A",
-                "+O2j4ek9BFSTXtSVUCPn0QFlh6vqPaYjWf17EQHb",
-                "IQoJb3JpZ2luX2VjENL//////////wEaCXVzLXdlc3QtMiJGMEQCIF1z012vCtm0r31VNh/lC9106SkLBnOCpdqna4CsACSHAiAQ84DGL/EQyFcpNyYxRDnq9KFCLhLEuQFH8Y8/t3oemyq6AgjL//////////8BEAEaDDI5MjYxMDMyODQ4NSIMX4WwclYKMIX8Bzf9Ko4CWc3G7lPvxBbS8+2ZnOgyebRGJduqxOw4Ex5/+GCkdiGNX9Dh/SzMUuqzwy0v1iS+DvlN7zCpNFwZvrpfG+wuR7Kt69BdHUmLjbz8BQjzhBp0/YfBonLi+Nna4gczVB1FzBejM1TsR88/pPK0yV+7jOOigrc6HmZHfoy9fPf8H6yJWtNCqFcQS6XyDL1SXAdPtn4aPLRyUt7OBtqD4KGh7yj5L9LJP/IyWlgmeJ8PwkYTMIxnMAVRoh6oitVqLEE/1SH3HI62tElTgc2iY8CeFuMIuOqjqN92KO4dwBYVljIkKu+FFMs8G5gRPmhLkcq2hekTERgCrouIlj5cb57nimGwtPY0qR56mBfFMg32MLuCjcMGOp4BNgkgZ2WcAGvSwJKSUk5mrr7luJMKVYHSiE2Ld1dOtWNE1Vy+fEQnCpFIcZsulvxoU3+dkKfQ1OgvAbseHd9vpVGZmUL2mnrHHldWynZr7HeXSpY9Po1T2OxbpFVcXlHhHlRqn0qqcqUNvGqGsk+c+Hv9/8DfnDJrdYF0DPwZfQn8E89khEBtAdvIL6/q00lW30PoMFQnjqqZ9P6Cy6c="
+                "ASIAUIIHPI6SX5A5N67R",
+                "g7YRqZioTKGNwLKqR8uY+fhfH7A5fr2qY32s/ICZ",
+                "IQoJb3JpZ2luX2VjEAIaCXVzLXdlc3QtMiJIMEYCIQD+cXdC6bfk9/W16hUndx/YC3vCmFCjm9nN+g6n0j/F8QIhAPCiDDBD0WZdbbaVl/Lj2B2NEbbL5fg9f5geWPcy0ACRKroCCPv//////////wEQARoMMjkyNjEwMzI4NDg1IgyCDWkpC4UjRoOJ2wAqjgJ+pZDCs1UFComqFCiGAkstqIxr/DdZHH5XYlqqUFXZKctz3kD5JGirQBio5L/cpI+bfEI5i9ArLkQ3SJaPZVLlWFETlvIQbmufeKe103Eu4tdZd0oIeUol/+jq/l6mEVn93YYzC6eapYVLk4xhst6B9qrRzl5ctl6G4WkdpDzOo+rr67TGzfFT0tbNIVvgiwCN5/22Td51UH8QsUM9PdfDCTWM482zqUragkzjtQhQAj+7eljZpU4tJDkL1+IK6QesQRV3x7lQphtbmuf4o+4m9OLchxHxNkcNPIrlR19bfuP0BS1tC4Q5i7g5xMDYI5vP+8SknpD07nr3mVpdYPpYFod+x/vSTx0boWkHNnAwq8CXwwY6nAGZYPhA6aWyCU430/CplPSNLWAUaZy2hIgP8mQCQT8afJMQuFQCpRgXKC2nZRm5+55+tDFcHywOkAvufvYJziXKPIrnsaak5ImnGFKXP5FrFBdyK3ZDAeSbtSW41oQRFwvsX+nY5c2O0iWRx+J5/g/w7CoKcPDLNBfrZQR9sETPrQ3wjnRnSkUHNTElZxwxt+cjYBFHqi/Vu0Gj9hk="
         );
 
         return S3Client.builder()
