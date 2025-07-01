@@ -14,22 +14,20 @@ import lombok.*;
 public class Document {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "documento_seq")
-    @SequenceGenerator(name = "documento_seq", sequenceName = "ADMIN.DOCUMENTO_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDDOCUMENTO")
-    @JsonProperty("idDocumento")
-    private Long idDocumento;
+    private Long id;
 
     @Column(name = "NOMBREARCHIVO", nullable = false)
-    @JsonProperty("nombreArchivo")
     private String nombreArchivo;
 
-    @Column(name = "RUTAARCHIVO", nullable = false, length = 200)
-    @JsonProperty("rutaArchivo")
-    private String rutaArchivo;
+    @Column(name = "URL", nullable = false)
+    private String url;
 
-    @Column(name = "FECHACARGA", nullable = false)
-    @JsonProperty("fechaCarga")
+    @Column(name = "TIPOMIME", nullable = false)
+    private String tipoMime;
+
+    @Column(name = "FECHACARGA")
     private String fechaCarga;
 
     @Column(name = "RECURSO_IDRECURSO", nullable = false)
