@@ -1,6 +1,9 @@
 package com.giret.document.service;
 
+import com.amazonaws.HttpMethod;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.giret.document.model.Document;
 import com.giret.document.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +12,28 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+
 import java.io.File;
+import java.net.URL;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
-    S3Client s3Client;
+    private S3Client s3Client;
 
     @Autowired
-    DocumentRepository documentRepository;
+    private S3Presigner s3Presigner;
 
+    @Autowired
+    private DocumentRepository documentRepository;
 
     @Value("${app.s3.bucket}")
     private String bucketName;
@@ -29,44 +41,74 @@ public class DocumentServiceImpl implements DocumentService {
     @Value("${app.s3.url-prefix}")
     private String s3UrlPrefix;
 
-
-
     @Override
-    public Document saveDocument(File file, String key, String originalFileName, String mimeType, Long resouceId) {
-
-
+    public Document saveDocument(File file, String key, String originalFilename, String contentType, Long recursoId) {
+        // 1) Subir el archivo a S3 con S3Client del SDK v2
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
-                .contentType(mimeType)
+                .contentType(contentType)
                 .build();
 
         s3Client.putObject(request, RequestBody.fromFile(file));
 
-        Document document = Document.builder()
-                .nombreArchivo(originalFileName)
-                .url(s3UrlPrefix + key)
-                .tipoMime(mimeType)
-                .fechaCarga(LocalDateTime.now().toString())
-                .recursoId(resouceId)
-                .build();
-
+        // 2) Guardar la metadata en la BD
+        Document document = new Document();
+        document.setKey(key);
+        document.setNombreArchivo(originalFilename);
+        document.setTipoMime(contentType);
+        document.setRecursoId(recursoId);
+        document.setFechaCarga(LocalDateTime.now().toString());
         return documentRepository.save(document);
     }
 
     @Override
     public List<Document> findAllDocument() {
-
         return documentRepository.findAll();
     }
 
     @Override
     public List<Document> findByResourceId(Long resourceId) {
-        return documentRepository.findByRecursoId(resourceId);
+        List<Document> documents = documentRepository.findByRecursoId(resourceId);
+        return documents.stream()
+                .filter(doc -> doc.getKey() != null)
+                .map(doc -> {
+                    URL presignedUrl = generatePresignedUrl(doc.getKey());
+                    doc.setUrl(presignedUrl.toString()); // Asigna la URL pre-firmada
+                    return doc;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public void deleteDocument(Long idDocument) {
         documentRepository.deleteById(idDocument);
+    }
+
+
+    public List<Document> getDocumentsByRecursoId(Long recursoId) {
+        List<Document> documents = documentRepository.findByRecursoId(recursoId);
+        return documents.stream()
+                .map(doc -> {
+                    URL presignedUrl = generatePresignedUrl(doc.getKey());
+                    doc.setUrl(presignedUrl.toString()); // Asigna la URL pre-firmada
+                    return doc;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+    private URL generatePresignedUrl(String objectKey) {
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(objectKey)
+                .build();
+
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(5))
+                .getObjectRequest(getObjectRequest)
+                .build();
+
+        return s3Presigner.presignGetObject(presignRequest).url();
     }
 }
