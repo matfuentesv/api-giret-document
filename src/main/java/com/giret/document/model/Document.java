@@ -18,10 +18,13 @@ public class Document {
     @Column(name = "IDDOCUMENTO")
     private Long id;
 
+    @Column(name = "KEY")
+    private String key;
+
     @Column(name = "NOMBREARCHIVO", nullable = false)
     private String nombreArchivo;
 
-    @Column(name = "URL", nullable = false)
+    @Column(name = "URL")
     private String url;
 
     @Column(name = "TIPOMIME", nullable = false)

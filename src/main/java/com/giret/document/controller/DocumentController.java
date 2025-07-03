@@ -3,6 +3,7 @@ package com.giret.document.controller;
 import com.giret.document.model.Document;
 import com.giret.document.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,32 +21,41 @@ public class DocumentController {
 
 
     @PostMapping("/saveDocument")
-    public ResponseEntity<Document> upload(@RequestParam("file") MultipartFile file,
-                                           @RequestParam("recursoId") Long recursoId) throws IOException {
+    public ResponseEntity<Document> upload(@RequestParam("file") MultipartFile multipartFile,
+                                           @RequestParam("recursoId") Long recursoId) {
+        try {
+            // 1) Construir la key
+            String objectKey = "uploads/" + recursoId + "/" + multipartFile.getOriginalFilename();
 
-        // Crea archivo temporal
-        File tempFile = File.createTempFile("upload-", ".tmp");
-        file.transferTo(tempFile);
+            // 2) Convertir MultipartFile a archivo temporal
+            File file = File.createTempFile("upload-", multipartFile.getOriginalFilename());
+            multipartFile.transferTo(file);
 
-        // Construye el key con carpeta por recurso
-        String folderName = "recurso-" + recursoId;
-        String fileName = file.getOriginalFilename();
-        String key = folderName + "/" + fileName;
+            // 3) Guardar documento usando el método que sube a S3 y guarda metadata
+            Document savedDoc = documentService.saveDocument(
+                    file,
+                    objectKey,
+                    multipartFile.getOriginalFilename(),
+                    multipartFile.getContentType(),
+                    recursoId
+            );
 
-        Document doc = documentService.saveDocument(
-                tempFile,
-                key,
-                file.getOriginalFilename(),
-                file.getContentType(),
-                recursoId
-        );
+            // 4) Eliminar archivo temporal
+            file.delete();
 
-        return ResponseEntity.ok(doc);
+            return ResponseEntity.ok(savedDoc);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
-    @GetMapping("/by-resource/{id}")
-    public ResponseEntity<List<Document>> findByRecursoId(@PathVariable Long id) {
-        return ResponseEntity.ok(documentService.findByResourceId(id));
+    @GetMapping("/by-resource/{recursoId}")
+    public ResponseEntity<List<Document>> getDocumentsByRecursoId(@PathVariable Long recursoId) {
+        List<Document> documents = documentService.findByResourceId(recursoId);
+        // El servicio ya se encarga de asignar la URL pre-firmada a cada objeto Document
+        return ResponseEntity.ok(documents);
     }
 
     @GetMapping("/findAllDocumento")

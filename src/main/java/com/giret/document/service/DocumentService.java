@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DocumentService {
 
-    Document saveDocument(File file, String key, String originalFileName, String mimeType, Long resouceId);
+    Document saveDocument(File file, String key, String originalFilename, String contentType, Long recursoId);
     List<Document> findAllDocument();
     List<Document> findByResourceId(Long resourceId);
     void deleteDocument(Long idDocument);
