@@ -22,18 +22,23 @@ public class DocumentController {
     public ResponseEntity<Document> upload(@RequestParam("file") MultipartFile file,
                                            @RequestParam("recursoId") Long recursoId) throws IOException {
 
-
+        // Crea archivo temporal
         File tempFile = File.createTempFile("upload-", ".tmp");
         file.transferTo(tempFile);
 
+        // Construye el key con carpeta por recurso
+        String folderName = "recurso-" + recursoId;
+        String fileName = file.getOriginalFilename();
+        String key = folderName + "/" + fileName;
 
-        String key = file.getOriginalFilename();
-
-        Document doc = documentService.saveDocument(tempFile,
+        Document doc = documentService.saveDocument(
+                tempFile,
                 key,
                 file.getOriginalFilename(),
                 file.getContentType(),
-                recursoId);
+                recursoId
+        );
+
         return ResponseEntity.ok(doc);
     }
 
