@@ -43,7 +43,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document saveDocument(File file, String key, String originalFilename, String contentType, Long recursoId) {
-        // 1) Subir el archivo a S3 con S3Client del SDK v2
+
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
@@ -52,7 +52,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         s3Client.putObject(request, RequestBody.fromFile(file));
 
-        // 2) Guardar la metadata en la BD
+
         Document document = new Document();
         document.setKey(key);
         document.setNombreArchivo(originalFilename);
@@ -74,7 +74,7 @@ public class DocumentServiceImpl implements DocumentService {
                 .filter(doc -> doc.getKey() != null)
                 .map(doc -> {
                     URL presignedUrl = generatePresignedUrl(doc.getKey());
-                    doc.setUrl(presignedUrl.toString()); // Asigna la URL pre-firmada
+                    doc.setUrl(presignedUrl.toString());
                     return doc;
                 })
                 .collect(Collectors.toList());
@@ -91,14 +91,14 @@ public class DocumentServiceImpl implements DocumentService {
         return documents.stream()
                 .map(doc -> {
                     URL presignedUrl = generatePresignedUrl(doc.getKey());
-                    doc.setUrl(presignedUrl.toString()); // Asigna la URL pre-firmada
+                    doc.setUrl(presignedUrl.toString());
                     return doc;
                 })
                 .collect(Collectors.toList());
     }
 
 
-    private URL generatePresignedUrl(String objectKey) {
+    URL generatePresignedUrl(String objectKey) {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(objectKey)

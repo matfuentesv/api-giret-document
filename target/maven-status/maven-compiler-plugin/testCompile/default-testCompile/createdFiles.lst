@@ -1,0 +1,4 @@
+com\giret\document\controller\DocumentControllerTest$TestConfig.class
+com\giret\document\config\AwsS3ConfigTest.class
+com\giret\document\controller\DocumentControllerTest.class
+com\giret\document\service\DocumentServiceImplTest.class

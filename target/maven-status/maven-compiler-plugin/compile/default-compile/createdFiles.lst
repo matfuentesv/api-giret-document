@@ -1,7 +1,5 @@
 com\giret\document\model\Document$DocumentBuilder.class
 com\giret\document\service\DocumentServiceImpl.class
-com\giret\document\service\S3Service.class
-com\giret\document\service\S3ServiceImpl.class
 com\giret\document\config\AwsS3Config.class
 com\giret\document\ApiGiretDocument.class
 com\giret\document\controller\DocumentController.class

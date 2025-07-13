@@ -24,14 +24,14 @@ public class DocumentController {
     public ResponseEntity<Document> upload(@RequestParam("file") MultipartFile multipartFile,
                                            @RequestParam("recursoId") Long recursoId) {
         try {
-            // 1) Construir la key
+
             String objectKey = "uploads/" + recursoId + "/" + multipartFile.getOriginalFilename();
 
-            // 2) Convertir MultipartFile a archivo temporal
+
             File file = File.createTempFile("upload-", multipartFile.getOriginalFilename());
             multipartFile.transferTo(file);
 
-            // 3) Guardar documento usando el método que sube a S3 y guarda metadata
+
             Document savedDoc = documentService.saveDocument(
                     file,
                     objectKey,
@@ -40,7 +40,7 @@ public class DocumentController {
                     recursoId
             );
 
-            // 4) Eliminar archivo temporal
+
             file.delete();
 
             return ResponseEntity.ok(savedDoc);
@@ -54,7 +54,7 @@ public class DocumentController {
     @GetMapping("/by-resource/{recursoId}")
     public ResponseEntity<List<Document>> getDocumentsByRecursoId(@PathVariable Long recursoId) {
         List<Document> documents = documentService.findByResourceId(recursoId);
-        // El servicio ya se encarga de asignar la URL pre-firmada a cada objeto Document
+
         return ResponseEntity.ok(documents);
     }
 

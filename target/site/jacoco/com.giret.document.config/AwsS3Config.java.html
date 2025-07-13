@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AwsS3Config.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api-giret-document</a> &gt; <a href="index.source.html" class="el_package">com.giret.document.config</a> &gt; <span class="el_source">AwsS3Config.java</span></div><h1>AwsS3Config.java</h1><pre class="source lang-java linenums">package com.giret.document.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+
+@Configuration
+<span class="fc" id="L12">public class AwsS3Config {</span>
+
+
+
+    @Bean
+    public S3Client s3Client() {
+<span class="fc" id="L18">        AwsSessionCredentials sessionCredentials = AwsSessionCredentials.create(</span>
+                &quot;ASIAUIIHPI6S7AWP4ZYD&quot;,
+                &quot;+GrQr6q/zSnFjqs4ogv8rKYwtWNh8CI4RV7l4WbV&quot;,
+                &quot;IQoJb3JpZ2luX2VjEP///////////wEaCXVzLXdlc3QtMiJHMEUCIQC+FB9sof9zmNb3dg9yFtH30zsg8Et34O4C5rBVb+uV+gIgAxy+3YXbq7jUkXklI0Mkshr6mn7AifHFr3BaGIVxfDMqsQIIGBABGgwyOTI2MTAzMjg0ODUiDAeXlv/aq06p5X0SZiqOAgcQ1ctiBTkqThY1wq25pzf4M/Yabm23c6QT/vQhCPOsD8+zTun12JiSIoStvGU5Ff3nKAAy+fH/ctBs7MavZKj4tV/3oweSCXqLSi9yJ+H7PR1rGn0qIqK/EB47WTl1v0mFlrvINrnzMyDUsf9FOHP0N3Afohn46C0UQYX5dSGcVhxYLRZv6es1kjoLaDM33g6eVd+MFHpCgBSSc1m80N8FfWwm49bd03F1n23Z0kmD2+rhLLAFQ8EAEMe2UTfohCKox1huM6v8bU8A5NRRN5RygXoVCzLD4cK/gAnRBYPeuhMd4TpIX8y+kEi0H2EYZxGAMrAcmuMvIS9q0IdOsMxXEijDVXk3r2ftOVSgijDFmM/DBjqdAfROY018ryGZ/VBJZ/DoL18bBdL1EsPXUycC0fDOhsS5A3QhTvVl3upU+tur8s4g34vYZE9aXQ4RyvHTDps2tu75wlJXae1hruiY/C6nmJNv4da05ZjUuMTGjdUt7xaUsbv14wbGYqSeUFsQ4svUvJNVSmndCcxlSXiMrUS5VOSrnhQ4lscO+X0vXoKbPdNi78rOEN5mNMv1NCNc0UQ=&quot;
+        );
+
+<span class="fc" id="L24">        return S3Client.builder()</span>
+<span class="fc" id="L25">                .region(Region.US_EAST_1)</span>
+<span class="fc" id="L26">                .credentialsProvider(StaticCredentialsProvider.create(sessionCredentials))</span>
+<span class="fc" id="L27">                .build();</span>
+    }
+
+    @Bean
+    public S3Presigner s3Presigner() {
+<span class="fc" id="L32">        AwsSessionCredentials sessionCredentials = AwsSessionCredentials.create(</span>
+                &quot;ASIAUIIHPI6S7AWP4ZYD&quot;,
+                &quot;+GrQr6q/zSnFjqs4ogv8rKYwtWNh8CI4RV7l4WbV&quot;,
+                &quot;IQoJb3JpZ2luX2VjEP///////////wEaCXVzLXdlc3QtMiJHMEUCIQC+FB9sof9zmNb3dg9yFtH30zsg8Et34O4C5rBVb+uV+gIgAxy+3YXbq7jUkXklI0Mkshr6mn7AifHFr3BaGIVxfDMqsQIIGBABGgwyOTI2MTAzMjg0ODUiDAeXlv/aq06p5X0SZiqOAgcQ1ctiBTkqThY1wq25pzf4M/Yabm23c6QT/vQhCPOsD8+zTun12JiSIoStvGU5Ff3nKAAy+fH/ctBs7MavZKj4tV/3oweSCXqLSi9yJ+H7PR1rGn0qIqK/EB47WTl1v0mFlrvINrnzMyDUsf9FOHP0N3Afohn46C0UQYX5dSGcVhxYLRZv6es1kjoLaDM33g6eVd+MFHpCgBSSc1m80N8FfWwm49bd03F1n23Z0kmD2+rhLLAFQ8EAEMe2UTfohCKox1huM6v8bU8A5NRRN5RygXoVCzLD4cK/gAnRBYPeuhMd4TpIX8y+kEi0H2EYZxGAMrAcmuMvIS9q0IdOsMxXEijDVXk3r2ftOVSgijDFmM/DBjqdAfROY018ryGZ/VBJZ/DoL18bBdL1EsPXUycC0fDOhsS5A3QhTvVl3upU+tur8s4g34vYZE9aXQ4RyvHTDps2tu75wlJXae1hruiY/C6nmJNv4da05ZjUuMTGjdUt7xaUsbv14wbGYqSeUFsQ4svUvJNVSmndCcxlSXiMrUS5VOSrnhQ4lscO+X0vXoKbPdNi78rOEN5mNMv1NCNc0UQ=&quot;
+        );
+
+<span class="fc" id="L38">        return S3Presigner.builder()</span>
+<span class="fc" id="L39">                .region(Region.US_EAST_1)</span>
+<span class="fc" id="L40">                .credentialsProvider(StaticCredentialsProvider.create(sessionCredentials))</span>
+<span class="fc" id="L41">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
