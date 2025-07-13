@@ -1,12 +1,8 @@
 package com.giret.document.service;
 
-import com.amazonaws.HttpMethod;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.giret.document.model.Document;
 import com.giret.document.repository.DocumentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -15,7 +11,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
-
 import java.io.File;
 import java.net.URL;
 import java.time.Duration;
@@ -26,14 +21,18 @@ import java.util.stream.Collectors;
 @Service
 public class DocumentServiceImpl implements DocumentService {
 
-    @Autowired
-    private S3Client s3Client;
 
-    @Autowired
-    private S3Presigner s3Presigner;
+    final private S3Client s3Client;
 
-    @Autowired
-    private DocumentRepository documentRepository;
+    private final S3Presigner s3Presigner;
+
+    private final DocumentRepository documentRepository;
+
+    public DocumentServiceImpl(S3Client s3Client, S3Presigner s3Presigner, DocumentRepository documentRepository) {
+        this.s3Client = s3Client;
+        this.s3Presigner = s3Presigner;
+        this.documentRepository = documentRepository;
+    }
 
     @Value("${app.s3.bucket}")
     private String bucketName;
@@ -89,10 +88,9 @@ public class DocumentServiceImpl implements DocumentService {
     public List<Document> getDocumentsByRecursoId(Long recursoId) {
         List<Document> documents = documentRepository.findByRecursoId(recursoId);
         return documents.stream()
-                .map(doc -> {
+                .peek(doc -> {
                     URL presignedUrl = generatePresignedUrl(doc.getKey());
                     doc.setUrl(presignedUrl.toString());
-                    return doc;
                 })
                 .collect(Collectors.toList());
     }
